@@ -16,6 +16,8 @@ if "left_mistakes" not in st.session_state:
     st.session_state.left_mistakes = 0  # 左ランプのカウント
 if "right_mistakes" not in st.session_state:
     st.session_state.right_mistakes = 0  # 右ランプのカウント
+if "play_burst_sound" not in st.session_state:
+    st.session_state.play_burst_sound = False
 
 # カスタムCSSを追加
 st.markdown(
@@ -56,12 +58,14 @@ def add_to_count_and_reset_mistakes(side, value):
         st.session_state.last_left = value
         if st.session_state.left_count>50:
             st.session_state.left_count = 25
+            st.session_state.play_burst_sound = True
         st.session_state.left_mistakes = 0  # ミスのランプをリセット
     elif side == "right":
         st.session_state.right_count += value
         st.session_state.last_right = value
         if st.session_state.right_count>50:
             st.session_state.right_count = 25
+            st.session_state.play_burst_sound = True
         st.session_state.right_mistakes = 0  # ミスのランプをリセット
     st.rerun()
 
@@ -168,3 +172,9 @@ with col2:
 if st.session_state.get("play_sound", False):
     st.session_state.play_sound = False
     play_local_sound("miss_announce.mp3")
+
+if st.session_state.get("play_burst_sound", False):
+    play_local_sound("burst.mp3")
+    st.session_state.play_burst_sound = False  # フラグをリセット
+    
+
